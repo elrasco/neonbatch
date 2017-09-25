@@ -15,21 +15,28 @@ module.exports = {
 
     const sort_by_total_summary = posts => posts.sort((post1, post2) => post2.total_count - post1.total_count);
 
+    const changeId = fieldName => obj => {
+      obj[fieldName || 'objectId'] = obj.id
+      return obj;
+    };
 
     const comments = fbApi.batch(post_ids, '', { access_token, parameters: [`fields=comments.summary(1)`] })
       .then(R.flatten)
       .then(R.map(summary_total_count_map('comments')))
-      .then(sort_by_total_summary);
+      .then(sort_by_total_summary)
+      .then(reactions => reactions.map(changeId()));
 
     const likes = fbApi.batch(post_ids, '', { access_token, parameters: [`fields=likes.summary(1)`] })
       .then(R.flatten)
       .then(R.map(summary_total_count_map('likes')))
-      .then(sort_by_total_summary);
+      .then(sort_by_total_summary)
+      .then(reactions => reactions.map(changeId()));
 
     const reactions = fbApi.batch(post_ids, '', { access_token, parameters: [`fields=reactions.summary(1)`] })
       .then(R.flatten)
       .then(R.map(summary_total_count_map('reactions')))
-      .then(sort_by_total_summary);
+      .then(sort_by_total_summary)
+      .then(reactions => reactions.map(changeId()));
 
     return Promise.all([comments, likes, reactions])
       .then(([comments, likes, reactions]) => {

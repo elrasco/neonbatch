@@ -3,6 +3,11 @@ const fbApi = require('./fbApi');
 const moment = require('moment');
 const mongo = require('./FluentMongo');
 
+const changeId = fieldName => obj => {
+  obj[fieldName || 'objectId'] = obj.id
+  return obj;
+}
+
 const getTodayPostsAll = (access_token, post_type = 'post') => page_ids_array => {
   return fbApi.batch(page_ids_array, `${post_type}s`, { access_token, parameters: [`since=${moment().format('YYYY-MM-DD')}`, 'fields=created_time,title,source,description,message,type', 'limit=100'] })
     .then(response => response.map(R.prop('data')))
@@ -19,7 +24,7 @@ const getTodayPostsAll = (access_token, post_type = 'post') => page_ids_array =>
 module.exports = {
   getTodayPostsAll: access_token => page_ids_array => getTodayPostsAll(access_token)(page_ids_array).then(posts => posts.filter(R.propEq('type', 'link'))),
   getTodayVideosAll: access_token => page_ids_array => getTodayPostsAll(access_token, 'video')(page_ids_array),
-  saveMany: pages => mongo().connect().setCollection('pages').bulkWrite(pages).close(),
+  saveMany: pages => mongo().connect().setCollection('pages').bulkWrite(pages.map(changeId())).close(),
   getAll: () => mongo().connect().setCollection('pages').find({}).close(),
   getFans: access_token => pages => fbApi.batch(pages, '', { access_token, parameters: ['fields=fan_count'] })
 }
