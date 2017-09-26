@@ -1,6 +1,7 @@
 const R = require('ramda');
 const fbApi = require('./fbApi');
 const moment = require('moment');
+const changeId = require('./Utils').changeId;
 
 module.exports = {
   collectStatistics: access_token => posts => {
@@ -14,11 +15,6 @@ module.exports = {
     };
 
     const sort_by_total_summary = posts => posts.sort((post1, post2) => post2.total_count - post1.total_count);
-
-    const changeId = fieldName => obj => {
-      obj[fieldName || 'objectId'] = obj.id
-      return obj;
-    };
 
     const comments = fbApi.batch(post_ids, '', { access_token, parameters: [`fields=comments.summary(1)`] })
       .then(R.flatten)

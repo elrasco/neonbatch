@@ -2,11 +2,7 @@ const R = require('ramda');
 const fbApi = require('./fbApi');
 const moment = require('moment');
 const mongo = require('./FluentMongo');
-
-const changeId = fieldName => obj => {
-  obj[fieldName || 'objectId'] = obj.id
-  return obj;
-}
+const changeId = require('./Utils').changeId;
 
 const getTodayPostsAll = (access_token, post_type = 'post') => page_ids_array => {
   return fbApi.batch(page_ids_array, `${post_type}s`, { access_token, parameters: [`since=${moment().format('YYYY-MM-DD')}`, 'fields=created_time,title,source,description,message,type', 'limit=100'] })

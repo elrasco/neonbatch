@@ -14,7 +14,7 @@ const steepests = reactions => {
   });
 
   const steepest = R.keys(maxs)
-    .map(id => Object.assign({}, { id, total_count: maxs[id] }, { diff: maxs[id] - mins[id] }))
+    .map(objectId => Object.assign({}, { objectId, total_count: maxs[objectId] }, { diff: maxs[objectId] - mins[objectId] }))
     .sort((c1, c2) => c2.diff - c1.diff);
 
   return steepest;

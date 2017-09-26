@@ -1,9 +1,5 @@
 const mongo = require('./FluentMongo');
-
-const changeId = fieldName => obj => {
-  obj[fieldName || 'objectId'] = obj.id
-  return obj;
-}
+const changeId = require('./Utils').changeId;
 
 module.exports = {
   saveMany: posts => mongo().connect().setCollection('posts').bulkWrite(posts.map(changeId())).close(),
