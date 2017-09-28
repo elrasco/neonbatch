@@ -4,18 +4,15 @@ const moment = require("moment");
 const mongo = require("./FluentMongo");
 const changeId = require("./Utils").changeId;
 
-const getTodayPostsAll = (
-  access_token,
-  post_type = "post"
-) => page_ids_array => {
+const getTodayPostsAll = (access_token, post_type = "post") => page_ids_array => {
+  let fieldsFor = {
+    post: "created_time,source,description,picture,from,shares,type",
+    video: "created_time,title,source,description,picture,from,content_category,length,live_status"
+  };
   return fbApi
     .batch(page_ids_array, `${post_type}s`, {
       access_token,
-      parameters: [
-        `since=${moment().format("YYYY-MM-DD")}`,
-        "fields=created_time,title,source,description,message,type,picture",
-        "limit=100"
-      ]
+      parameters: [`since=${moment().format("YYYY-MM-DD")}`, `fields=${fieldsFor[post_type]}`, "limit=100"]
     })
     .then(response => response.map(R.prop("data")))
     .then(R.flatten)
@@ -34,12 +31,8 @@ const getTodayPostsAll = (
 };
 
 module.exports = {
-  getTodayPostsAll: access_token => page_ids_array =>
-    getTodayPostsAll(access_token)(page_ids_array).then(posts =>
-      posts.filter(R.propEq("type", "link"))
-    ),
-  getTodayVideosAll: access_token => page_ids_array =>
-    getTodayPostsAll(access_token, "video")(page_ids_array),
+  getTodayPostsAll: access_token => page_ids_array => getTodayPostsAll(access_token)(page_ids_array).then(posts => posts.filter(R.propEq("type", "link"))),
+  getTodayVideosAll: access_token => page_ids_array => getTodayPostsAll(access_token, "video")(page_ids_array),
   saveMany: pages =>
     mongo()
       .connect()
@@ -52,6 +45,5 @@ module.exports = {
       .setCollection("pages")
       .find({})
       .close(),
-  getFans: access_token => pages =>
-    fbApi.batch(pages, "", { access_token, parameters: ["fields=fan_count"] })
+  getFans: access_token => pages => fbApi.batch(pages, "", { access_token, parameters: ["fields=fan_count"] })
 };
