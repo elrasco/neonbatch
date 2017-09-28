@@ -27,7 +27,14 @@ const getTodayPostsAll = (access_token, post_type = "post") => page_ids_array =>
           h: now_f("HH")
         });
       });
-    });
+    })
+    .then(posts =>
+      posts.map(p => {
+        let toBeReturned = Object.assign({}, p, { page_id: p.from.id });
+        delete toBeReturned.from;
+        return toBeReturned;
+      })
+    );
 };
 
 module.exports = {
