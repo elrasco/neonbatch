@@ -6,7 +6,6 @@ const Statistic = require("./Statistic");
 const access_token = require("./Token").access_token;
 
 Video.getAll()
-  .then(videos => videos.slice(videos.length - 10))
   .then(Collector.collectStatisticsForVideo(access_token))
   .then(Statistic.vsave);
 

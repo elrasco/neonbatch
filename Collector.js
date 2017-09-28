@@ -56,7 +56,13 @@ const collectStatistics = access_token => posts => {
 module.exports = {
   collectStatisticsForVideo: access_token => posts => {
     let _posts = posts.map(p => Object.assign({}, p, { id: p.page_id ? `${p.page_id}_` + p.id : p.id }));
-    return collectStatistics(access_token)(_posts);
+    return collectStatistics(access_token)(_posts).then(statistic => {
+      statistic.comments = statistic.comments.map(c => Object.assign(c, { objectId: c.objectId.split("_")[0], id: c.objectId.split("_")[0] }));
+      statistic.likes = statistic.likes.map(c => Object.assign(c, { objectId: c.objectId.split("_")[0], id: c.objectId.split("_")[0] }));
+      statistic.reactions = statistic.reactions.map(c => Object.assign(c, { objectId: c.objectId.split("_")[0], id: c.objectId.split("_")[0] }));
+      statistic.shares = statistic.shares.map(c => Object.assign(c, { objectId: c.objectId.split("_")[0], id: c.objectId.split("_")[0] }));
+      return statistic;
+    });
   },
   collectStatistics
 };
