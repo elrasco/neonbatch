@@ -5,7 +5,7 @@ module.exports = () => {
   let current;
   let currentCollection;
   return (_this = {
-    connect: (url = "mongodb://52.28.116.99:27017/neon") => {
+    connect: (url = "mongodb://18.194.158.74:27018/neon") => {
       current = new Promise((resolve, reject) => {
         MongoClient.connect(url, (err, _db) => {
           db = _db;
