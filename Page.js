@@ -17,6 +17,7 @@ const getTodayPostsAll = (access_token, post_type = "post") => page_ids_array =>
     .then(response => response.map(R.prop("data")))
     .then(R.flatten)
     .then(posts => {
+      console.log(posts);
       const now = moment(new Date());
       const now_f = f => parseInt(now.format(f));
       return posts.map(v => {
@@ -30,7 +31,7 @@ const getTodayPostsAll = (access_token, post_type = "post") => page_ids_array =>
     })
     .then(posts =>
       posts.map(p => {
-        let toBeReturned = Object.assign({}, p, { page_id: p.from.id });
+        let toBeReturned = Object.assign({}, p, { page_id: p.from.id, page: p.from });
         delete toBeReturned.from;
         return toBeReturned;
       })

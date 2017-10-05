@@ -8,21 +8,23 @@ const collectStatistics = access_token => posts => {
   const summary_total_count_map = field => response => {
     return {
       id: response.id,
-      total_count: response[field].summary.total_count
+      total_count: response[field].summary.total_count,
+      page_id: response.from.id
     };
   };
 
   const summary_total_count_shares = response => {
     return {
       id: response.id,
-      total_count: (response.shares || {}).count || 0
+      total_count: (response.shares || {}).count || 0,
+      page_id: response.from.id
     };
   };
 
   const sort_by_total_count = posts => posts.sort((post1, post2) => post2.total_count - post1.total_count);
 
   const insights = fbApi
-    .batch(post_ids, "", { access_token, parameters: [`fields=comments.summary(1),likes.summary(1),reactions.summary(1),shares`] })
+    .batch(post_ids, "", { access_token, parameters: [`fields=comments.summary(1),likes.summary(1),reactions.summary(1),shares,from`] })
     .then(R.flatten)
     .then(response => [
       R.map(summary_total_count_map("comments"))(response),
