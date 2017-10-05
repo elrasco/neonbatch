@@ -32,9 +32,9 @@ Video.getAll()
       }
     });
 
-    mongo()
+    /*     mongo()
       .connect()
       .setCollection("videos")
       .bulkWrite(old_videos)
-      .close();
+      .close(); */
   });
