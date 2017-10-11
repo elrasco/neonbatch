@@ -1,11 +1,13 @@
-const Steepests = require('./steepests');
-const moment = require('moment');
+const Steepests = require("./steepests");
+const moment = require("moment");
 
-const now = moment(new Date());
+const endDay = moment(new Date())
+  .add(1, "day")
+  .startOf("day")
+  .toDate();
+const startDay = moment(new Date())
+  .startOf("day")
+  .toDate();
 
-const y = now.year();
-const m = now.month() + 1;
-const d = now.date();
-
-Steepests.videos.reactions({ y, m, d }).then(Steepests.videos.saveToday);
-Steepests.posts.reactions({ y, m, d }).then(Steepests.posts.saveToday);
+Steepests.videos.reactions({ created_at: { $gte: startDay, $lte: endDay } }).then(Steepests.videos.saveToday);
+Steepests.posts.reactions({ created_at: { $gte: startDay, $lte: endDay } }).then(Steepests.posts.saveToday);
