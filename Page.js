@@ -42,15 +42,27 @@ module.exports = {
   getTodayVideosAll: access_token => page_ids_array => getTodayPostsAll(access_token, "video")(page_ids_array),
   saveMany: pages =>
     mongo()
-      .connect()
-      .setCollection("pages")
-      .bulkWrite(pages.map(changeId()))
-      .close(),
+    .connect()
+    .setCollection("pages")
+    .bulkWrite(pages.map(changeId()))
+    .close(),
   getAll: () =>
     mongo()
-      .connect()
-      .setCollection("pages")
-      .find({})
-      .close(),
-  getFans: access_token => pages => fbApi.batch(pages, "", { access_token, parameters: ["fields=fan_count"] })
+    .connect()
+    .setCollection("pages")
+    .find({})
+    .close(),
+  getFans: access_token => pages => fbApi.batch(pages, "", { access_token, parameters: ["fields=fan_count"] }),
+  getFansByCountry: access_token => pages => fbApi.batch(pages, "insights/page_fans_country", { access_token, parameters: [] })
+    .then(batchResult => batchResult.map(result => result.data[0]))
+    .then(batchResult => batchResult.filter(result => !!result))
+    .then(batchResult => batchResult.map(result => {
+      if (result) {
+        return {
+          id: result.id.split("/")[0],
+          fans_country: result.values[1].value
+        }
+      }
+
+    }))
 };
