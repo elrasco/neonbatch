@@ -6,7 +6,7 @@ const changeId = require("./Utils").changeId;
 
 const getTodayPostsAll = (access_token, post_type = "post") => page_ids_array => {
   let fieldsFor = {
-    post: "created_time,source,description,picture,from,type",
+    post: "created_time,source,description,picture,from,type,message",
     video: "created_time,title,source,description,picture,from,content_category,length"
   };
   return fbApi
