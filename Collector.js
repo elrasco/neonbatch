@@ -2,9 +2,15 @@ const R = require("ramda");
 const fbApi = require("./fbApi");
 const moment = require("moment");
 const changeId = require("./Utils").changeId;
+const Token = require("./Token");
 
-const collectStatistics = access_token => posts => {
-  post_ids = posts.map(R.pick(["id"]));
+const collectStatistics = () => posts => {
+  post_ids = posts.map(p => {
+    return {
+      id: p.id,
+      access_token: Token.getAppAccessToken()
+    }
+  });
   const summary_total_count_map = field => response => {
     return {
       id: response.id,
@@ -24,7 +30,7 @@ const collectStatistics = access_token => posts => {
   const sort_by_total_count = posts => posts.sort((post1, post2) => post2.total_count - post1.total_count);
 
   const insights = fbApi
-    .batch(post_ids, "", { access_token, parameters: [`fields=comments.summary(1),likes.summary(1),reactions.summary(1),shares,from`] })
+    .batch(post_ids, "", { access_token: Token.getAppAccessToken(), parameters: [`fields=comments.summary(1),likes.summary(1),reactions.summary(1),shares,from`] })
     .then(R.flatten)
     .then(response => [
       R.map(summary_total_count_map("comments"))(response),
@@ -56,9 +62,9 @@ const collectStatistics = access_token => posts => {
 };
 
 module.exports = {
-  collectStatisticsForVideo: access_token => posts => {
+  collectStatisticsForVideo: () => posts => {
     let _posts = posts.map(p => Object.assign({}, p, { id: p.page_id ? `${p.page_id}_` + p.id : p.id }));
-    return collectStatistics(access_token)(_posts).then(statistic => {
+    return collectStatistics()(_posts).then(statistic => {
       statistic.comments = statistic.comments.map(c => Object.assign(c, { objectId: c.objectId.split("_")[1], id: c.objectId.split("_")[1] }));
       statistic.likes = statistic.likes.map(c => Object.assign(c, { objectId: c.objectId.split("_")[1], id: c.objectId.split("_")[1] }));
       statistic.reactions = statistic.reactions.map(c => Object.assign(c, { objectId: c.objectId.split("_")[1], id: c.objectId.split("_")[1] }));
