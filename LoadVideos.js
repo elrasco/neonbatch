@@ -1,6 +1,6 @@
-const Page = require("./Page");
-const Video = require("./Video");
-const Post = require("./Post");
+const Page = require("./lib/Page");
+const Video = require("./lib/Video");
+const Post = require("./lib/Post");
 const access_token = require("./Token").access_token;
 
 Page.getAll()
