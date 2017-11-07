@@ -13,10 +13,12 @@ const access_token = require("./lib/Token").access_token;
 const steepest = require("./lib/steepest");
 
 module.exports = {
-  LoadStatistics: (event, context, callback) => {
+  LoadVideoStatistics: (event, context, callback) => {
     Video.getAll()
       .then(Collector.collectStatisticsForVideo())
       .then(Statistic.vsave);
+  },
+  LoadPostStatistics: (event, context, callback) => {
     Post.getAll()
       .then(Collector.collectStatistics())
       .then(Statistic.psave);
