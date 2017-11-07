@@ -55,7 +55,7 @@ functions:
     handler: handler.LoadPages
     memorySize: 128
     events:
-      - schedule: cron(0 3 * * ? *)
+      - schedule: cron(0 4 * * ? *)
 
   Today:
     handler: handler.Today
@@ -65,17 +65,17 @@ functions:
   Yesterday:
     handler: handler.Yesterday
     events:
-      - schedule: cron(0 0 * * ? *)
+      - schedule: cron(0 2 * * ? *)
 
   SevenDays:
     handler: handler.SevenDays
     events:
-      - schedule: cron(30 0 * * ? *)
+      - schedule: cron(30 2 * * ? *)
 
   ThirtyDays:
     handler: handler.ThirtyDays
     events:
-      - schedule: cron(0 2 * * ? *)
+      - schedule: cron(0 3 * * ? *)
 #      
 #    Define function environment variables here
 #    environment:

@@ -25,14 +25,16 @@ module.exports = {
     Page.getAll()
       .then(Page.getTodayVideosAll(access_token))
       .then(Video.saveMany);
+  },
+  LoadPosts: (event, context, callback) => {
     Page.getAll()
       .then(Page.getTodayPostsAll(access_token))
       .then(Post.saveMany);
   },
   LoadPages: (event, context, callback) => {
     User.getPagesILike(access_token)
-      .then(pages => Promise.all([pages, Page.getFans(access_token)(pages)]))
-      .then(([pages, pagefans]) => pages.map(p => Object.assign({}, p, R.find(R.propEq("id", p.id))(pagefans))))
+      .then(pages => Promise.all([pages, Page.getFans(access_token)(pages), Page.getFansByCountry(access_token)(pages)]))
+      .then(([pages, fans, fansByCountry]) => pages.map(p => Object.assign({}, p, R.find(R.propEq("id", p.id))(fans), R.find(R.propEq("id", p.id))(fansByCountry))))
       .then(Page.saveMany);
   },
   Today: (event, context, callback) => {
