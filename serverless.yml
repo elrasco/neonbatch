@@ -55,7 +55,7 @@ functions:
     handler: handler.LoadPages
     memorySize: 128
     events:
-      - schedule: cron(0 3 * * ? *)
+      - schedule: cron(0 4 * * ? *)
 
   Today:
     handler: handler.Today
