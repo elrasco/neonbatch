@@ -44,12 +44,12 @@ functions:
     handler: handler.LoadVideos
     memorySize: 256
     events: 
-      - schedule: cron(7/20 * * * ? *)
+      - schedule: cron(0 */2 * * ? *)
 
   LoadStatistics:
     handler: handler.LoadStatistics
     events:
-      - schedule: cron(0/30 * * * ? *)
+      - schedule: cron(5 */2 * * ? *)
   
   LoadPages:
     handler: handler.LoadPages
@@ -60,22 +60,22 @@ functions:
   Today:
     handler: handler.Today
     events:
-      - schedule: cron(5/20 * * * ? *)
+      - schedule: cron(10 * * * ? *)
 
   Yesterday:
     handler: handler.Yesterday
     events:
-      - schedule: cron(0 0 * * ? *)
+      - schedule: cron(0 2 * * ? *)
 
   SevenDays:
     handler: handler.SevenDays
     events:
-      - schedule: cron(30 0 * * ? *)
+      - schedule: cron(10 2 * * ? *)
 
   ThirtyDays:
     handler: handler.ThirtyDays
     events:
-      - schedule: cron(0 2 * * ? *)
+      - schedule: cron(20 2 * * ? *)
 #      
 #    Define function environment variables here
 #    environment:
