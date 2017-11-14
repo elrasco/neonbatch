@@ -44,23 +44,34 @@ functions:
     handler: handler.LoadVideos
     memorySize: 256
     events: 
-      - schedule: cron(0 */2 * * ? *)
-
-  LoadStatistics:
-    handler: handler.LoadStatistics
+      - schedule: cron(0 * * * ? *)
+  
+  LoadVideoStatistics:
+    handler: handler.LoadVideoStatistics
     events:
-      - schedule: cron(5 */2 * * ? *)
+      - schedule: cron(5 * * * ? *)
+  
+  LoadPosts: 
+    handler: handler.LoadPosts
+    memorySize: 256
+    events: 
+      - schedule: cron(10 */2 * * ? *)
+
+  LoadPostStatistics:
+    handler: handler.LoadPostStatistics
+    events:
+      - schedule: cron(15 */2 * * ? *)
   
   LoadPages:
     handler: handler.LoadPages
     memorySize: 128
     events:
-      - schedule: cron(0 4 * * ? *)
+      - schedule: cron(0 1 * * ? *)
 
   Today:
     handler: handler.Today
     events:
-      - schedule: cron(10 * * * ? *)
+      - schedule: cron(30 */2 * * ? *)
 
   Yesterday:
     handler: handler.Yesterday
