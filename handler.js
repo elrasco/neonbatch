@@ -10,6 +10,7 @@ const Statistic = require("./lib/Statistic");
 const Page = require("./lib/Page");
 const User = require("./lib/User");
 const access_token = require("./lib/Token").access_token;
+const tokenManager = require("./lib/Token");
 const steepest = require("./lib/steepest");
 
 module.exports = {
@@ -44,9 +45,9 @@ module.exports = {
           };
         })
       )
-      .then(pages => Promise.all([pages, Page.getExtraFields(access_token)(pages)]))
+      .then(pages => Promise.all([pages, Page.getExtraFields(tokenManager.getAppAccessToken())(pages)]))
       .then(([pages, extraFields]) =>
-        Promise.all([pages.map(p => Object.assign({}, p, R.find(R.propEq("username", p.id))(extraFields))), Page.getFansByCountry(access_token)(pages)])
+        Promise.all([pages.map(p => Object.assign({}, p, R.find(R.propEq("username", p.id))(extraFields))), Page.getFansByCountry(tokenManager.getAppAccessToken())(pages)])
       )
       .then(([pages, fansByCountry]) => pages.map(p => Object.assign({}, p, R.find(R.propEq("id", p.id))(fansByCountry))))
       .then(pages => Page.saveMany(pages, { key: "objectId", value: "username" }));
