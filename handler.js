@@ -34,10 +34,22 @@ module.exports = {
       .then(Post.saveMany);
   },
   LoadPages: (event, context, callback) => {
-    User.getPagesILike(access_token)
-      .then(pages => Promise.all([pages, Page.getFans(access_token)(pages), Page.getFansByCountry(access_token)(pages)]))
-      .then(([pages, fans, fansByCountry]) => pages.map(p => Object.assign({}, p, R.find(R.propEq("id", p.id))(fans), R.find(R.propEq("id", p.id))(fansByCountry))))
-      .then(Page.saveMany);
+    Page.getAll()
+      .then(pages => pages.filter(p => !p.name))
+      .then(pages =>
+        pages.map(p => {
+          return {
+            id: p.objectId,
+            objectId: p.objectId
+          };
+        })
+      )
+      .then(pages => Promise.all([pages, Page.getExtraFields(access_token)(pages)]))
+      .then(([pages, extraFields]) =>
+        Promise.all([pages.map(p => Object.assign({}, p, R.find(R.propEq("username", p.id))(extraFields))), Page.getFansByCountry(access_token)(pages)])
+      )
+      .then(([pages, fansByCountry]) => pages.map(p => Object.assign({}, p, R.find(R.propEq("id", p.id))(fansByCountry))))
+      .then(pages => Page.saveMany(pages, { key: "objectId", value: "username" }));
   },
   Today: (event, context, callback) => {
     steepest.today();
