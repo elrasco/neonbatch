@@ -17,6 +17,10 @@ module.exports = {
   LoadVideoStatistics: (event, context, callback) => {
     Video.getAll()
       .then(Collector.collectStatisticsForVideo())
+      .then(stats => {
+        console.log(stats.reactions.length);
+        return stats;
+      })
       .then(Statistic.vsave);
   },
   LoadPostStatistics: (event, context, callback) => {
